@@ -2,7 +2,7 @@ import {signIn, signOut, useSession} from 'next-auth/react'
 import "tailwindcss/tailwind.css"
 import Nav from '@/components/Nav'
 
-export default function Layout() {
+export default function Layout({children}) {
     const {data: session} = useSession()
     if (!session) {
         return (
@@ -24,7 +24,8 @@ export default function Layout() {
 
             <div className="bg-blue-900 min-h-screen flex">
                 <Nav/>
-                <div className="bg-white flex-grow mt-2 mr-2 mb-2 rounded-lg p-4">logged in as {session.user.email}
+                <div className="bg-white flex-grow mt-2 mr-2 mb-2 rounded-lg p-4">
+                    {children}
                     <button onClick={() => signOut()}>Sign out</button>
                 </div>
             </div>
