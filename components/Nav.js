@@ -1,6 +1,5 @@
 import Link from 'next/link'
 import {useRouter} from 'next/router'
-import {act} from 'react-dom/test-utils'
 
 export default function Nav() {
     const inactiveLink = "flex gap-1 p-1"

@@ -1,5 +1,4 @@
 import {signIn, signOut, useSession} from 'next-auth/react'
-import "tailwindcss/tailwind.css"
 import Nav from '@/components/Nav'
 
 export default function Layout({children}) {
