@@ -2,6 +2,7 @@ import {useRouter} from 'next/router'
 import axios from 'axios'
 import {useState} from 'react'
 import Spinner from '@/components/Spinner'
+import {ReactSortable} from 'react-sortablejs'
 
 export default function ProductForm({
                                         _id,
@@ -24,7 +25,6 @@ export default function ProductForm({
         if (_id) {
             await axios.put("/api/products", {...data, _id});
         } else {
-
             await axios.post("/api/products", data);
         }
         setGoToProducts(true);
@@ -48,18 +48,23 @@ export default function ProductForm({
             setIsUploading(false);
         }
     }
+    function updateImagesOrder(images){
+        setImages(images);
+    }
     return (
         <form onSubmit={createProduct}>
             <label>Product name</label>
             <input type="text" placeholder={"product name"} value={title}
                    onChange={event => setTitle(event.target.value)}/>
             <label>Photos</label>
-            <div className="mb-2 flex flex-wrap gap-2">
-                {!!images?.length && images.map(link => (
-                    <div key={link} className="h-24">
-                        <img src={link} alt={""} className={"rounded-lg"}/>
-                    </div>
-                ))}
+            <div className="mb-2 flex flex-wrap gap-1">
+                <ReactSortable list={images} className={"flex flex-wrap gap-1"} setList={updateImagesOrder}>
+                    {!!images?.length && images.map(link => (
+                        <div key={link} className="h-24">
+                            <img src={link} alt={""} className={"rounded-lg"}/>
+                        </div>
+                    ))}
+                </ReactSortable>
                 {isUploading && (
                     <div className="h-24 p-1 bg-gray-200 flex items-center">
                         <Spinner />
