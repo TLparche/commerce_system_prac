@@ -8,8 +8,8 @@ export default function Products(){
     useEffect(()=> {
         axios.get("/api/products").then(response => {
             setProducts(response.data)
-        })
-    })
+        });
+    },[]);
     return(
         <Layout>
             <Link href={"/products/new"} className={"btn-primary"}>Add new product</Link>
