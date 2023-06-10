@@ -11,11 +11,10 @@ export default async function handle(req, res){
             res.json(await Product.find());
         }
     }
-    if (method === "DELETE"){
-        if (req.query?.id){
-            await Product.deleteOne({_id: req.query?.id});
-            res.json(true);
-        }
+    if (method === "DELETE") {
+        const {_id} = req.query;
+        await Product.deleteOne({_id});
+        res.json(true);
     }
     if (method === "PUT"){
         const {title, description, price, images, _id} = req.body;
