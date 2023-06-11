@@ -60,15 +60,20 @@ export default function Categories() {
     return (
         <Layout>
             <label>{editedCategory ? `Edit Category ${editedCategory.name}` : "Create new category"}</label>
-            <form onSubmit={saveCategory} className={"flex gap-1"}>
-                <input type="text" className={"mb-0"} placeholder={"Category name"} value={name}
-                       onChange={event => setName(event.target.value)}/>
-                <select className={"mb-0"} value={parentCategory} onChange={event => setParentCategory(event.target.value)}>
-                    <option value="">No parent category</option>
-                    {categories.length>0 && categories.map((category) => (
-                        <option value={category._id}>{category.name}</option>
-                    ))}
-                </select>
+            <form onSubmit={saveCategory}>
+                <div className={"flex gap-1"}>
+                    <input type="text" placeholder={"Category name"} value={name}
+                           onChange={event => setName(event.target.value)}/>
+                    <select value={parentCategory} onChange={event => setParentCategory(event.target.value)}>
+                        <option value="">No parent category</option>
+                        {categories.length>0 && categories.map((category) => (
+                            <option value={category._id}>{category.name}</option>
+                        ))}
+                    </select>
+                </div>
+                <div>
+                    <label>Properties</label>
+                </div>
                 <button type="submit" className={"btn-primary py-1"}>Save</button>
             </form>
             <table className={"basic mt-2"}>

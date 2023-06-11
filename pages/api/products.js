@@ -11,22 +11,24 @@ export default async function handle(req, res){
             res.json(await Product.find());
         }
     }
+    if (method === "POST"){
+        const {title, description, price, images, category} = req.body;
+        const productDoc = await Product.create({
+            title, description, price, images, category
+        })
+        res.json(productDoc);
+    }
+    if (method === "PUT"){
+        const {title, description, price, images, _id, category} = req.body;
+        await Product.updateOne({_id}, {title, description, price, images, category});
+        res.json(true);
+    }
     if (method === "DELETE") {
         const {_id} = req.query;
         await Product.deleteOne({_id});
         res.json(true);
     }
-    if (method === "PUT"){
-        const {title, description, price, images, _id} = req.body;
-        await Product.updateOne({_id}, {title, description, price, images});
-        res.json(true);
-    }
 
-    if (method === "POST"){
-        const {title, description, price, images} = req.body;
-        const productDoc = await Product.create({
-            title, description, price, images
-        })
-        res.json(productDoc);
-    }
+
+
 }
