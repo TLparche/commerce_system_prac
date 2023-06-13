@@ -53,7 +53,7 @@ export default function Categories() {
         }
         const data = {name, parentCategory, properties: properties.map(p => ({
                 name: p.name,
-                value: p.value,
+                value: p.value.split(","),
             }))}
         if(editedCategory){
             data._id = editedCategory._id;
@@ -72,7 +72,7 @@ export default function Categories() {
         setName(category.name);
         setParentCategory(category.parent?._id);
         setProperties(category.properties.map(({name, value}) => (
-            {name, value: value}))
+            {name, value: value.join(",")}))
         )
     }
     function addProperty(){
@@ -85,14 +85,14 @@ export default function Categories() {
             return [...prev].filter((_, prevIndex) => prevIndex !== index)
         })
     }
-    function changePropertyName(index, newName){
+    function changePropertyName(index, property, newName){
         setProperties(prev => {
             const properties = [...prev];
             properties[index].name = newName;
             return properties;
         })
     }
-    function changePropertyValue(index, newValue){
+    function changePropertyValue(index, property, newValue){
         setProperties(prev => {
             const properties = [...prev];
             properties[index].value = newValue;
@@ -118,11 +118,11 @@ export default function Categories() {
                     <label className={"block"}>Properties</label>
                     <button className={"btn-default text-sm"} type={'button'} onClick={addProperty}>Add new property</button>
                     {properties&&properties.length > 0 && properties.map((property, index)=> (
-                        <div key={property.name} className={"flex gap-1"}>
+                        <div className={"flex gap-1"}>
                             <input type={"text"} placeholder={"property name"} className={"mb-0"} value={property.name} onChange={(event) => {
-                                changePropertyName(index, event.target.value)}}/>
+                                changePropertyName(index, property, event.target.value)}}/>
                             <input type={"text"} placeholder={"property value"} className={"mb-0"} value={property.value} onChange={(event)=>{
-                                changePropertyValue(index, event.target.value)}
+                                changePropertyValue(index, property, event.target.value)}
                             }/>
                             <button type={"button"} className={"btn-default"} onClick={()=>deleteProperty(index)}>Remove</button>
                         </div>

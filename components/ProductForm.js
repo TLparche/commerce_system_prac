@@ -11,6 +11,7 @@ export default function ProductForm({
                                         price: existingPrice,
                                         images: existingImages,
                                         category: existingCategory,
+                                        properties: existingProperties,
                                     }) {
     const [title, setTitle] = useState(existingTitle || "");
     const [description, setDescription] = useState(existingDescription || "");
@@ -20,6 +21,7 @@ export default function ProductForm({
     const [goToProducts, setGoToProducts] = useState(false);
     const [isUploading, setIsUploading] = useState(false);
     const [categories, setCategories] = useState([])
+    const [properties, setProperties] = useState(existingProperties || "");
     const router = useRouter();
 
     useEffect(()=>{
@@ -30,7 +32,7 @@ export default function ProductForm({
 
     async function createProduct(event) {
         event.preventDefault()
-        const data = {title, description, price, images, category};
+        const data = {title, description, price, images, category, properties};
         if (_id) {
             await axios.put("/api/products", {...data, _id});
         } else {
@@ -57,8 +59,22 @@ export default function ProductForm({
             setIsUploading(false);
         }
     }
-    function updateImagesOrder(images){
+    function updateImagesOrder(images) {
         setImages(images);
+    }
+    function updateProperties(name, value){
+        setProperties(prev => {
+            const newProperties = {...prev}
+            newProperties[name] = value;
+            return newProperties;
+        })
+    }
+
+
+    const organizedProperty = [];
+    if (categories.length > 0 && category){
+        const copyOrganizedProperty = categories.find(({_id}) => _id === category);
+        if (copyOrganizedProperty) organizedProperty.push(...copyOrganizedProperty.properties);
     }
     return (
         <form onSubmit={createProduct}>
@@ -72,6 +88,17 @@ export default function ProductForm({
                     <option value={category._id}>{category.name}</option>
                 ))}
             </select>
+            {organizedProperty.length > 0 && organizedProperty.map((item) => (
+                    <div key={item.name} className={"flex gap-2"}>
+                        <label>{item.name}</label>
+                        <select value={properties[0][item.name]} onChange={event => updateProperties(item.name, event.target.value)}>
+                            {item.value.map(ele => (
+                                <option key={ele} value={ele}>{ele}</option>
+                            ))}
+                        </select>
+                    </div>
+                ))
+            }
             <label>Photos</label>
             <div className="mb-2 flex flex-wrap gap-1">
                 <ReactSortable list={images} className={"flex flex-wrap gap-1"} setList={updateImagesOrder}>
