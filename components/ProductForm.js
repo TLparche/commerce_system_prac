@@ -24,8 +24,8 @@ export default function ProductForm({
     const [properties, setProperties] = useState(existingProperties || "");
     const router = useRouter();
 
-    useEffect(()=>{
-        axios.get("/api/categories").then(result =>{
+    useEffect(() => {
+        axios.get("/api/categories").then(result => {
             setCategories(result.data);
         })
     }, [])
@@ -44,12 +44,13 @@ export default function ProductForm({
     if (goToProducts) {
         router.push("/products")
     }
-    async function uploadImages(event){
+
+    async function uploadImages(event) {
         const files = event.target?.files;
         if (files?.length > 0) {
             setIsUploading(true);
             const data = new FormData();
-            for (const file of files){
+            for (const file of files) {
                 data.append("file", file);
             }
             const res = await axios.post("/api/upload", data);
@@ -59,22 +60,26 @@ export default function ProductForm({
             setIsUploading(false);
         }
     }
+
     function updateImagesOrder(images) {
         setImages(images);
     }
-    function updateProperties(name, value){
+
+    function updateProperties(name, value) {
         setProperties(prev => {
-            const newProperties = {...prev}
-            newProperties[name] = value;
-            return newProperties;
-        })
+            const newProductProps = {...prev};
+            newProductProps[name] = value;
+            return newProductProps;
+        });
     }
 
 
     const organizedProperty = [];
-    if (categories.length > 0 && category){
+    if (categories.length > 0 && category) {
         const copyOrganizedProperty = categories.find(({_id}) => _id === category);
-        if (copyOrganizedProperty) organizedProperty.push(...copyOrganizedProperty.properties);
+        if (copyOrganizedProperty) {
+            organizedProperty.push(...copyOrganizedProperty.properties);
+        }
     }
     return (
         <form onSubmit={createProduct}>
@@ -89,15 +94,16 @@ export default function ProductForm({
                 ))}
             </select>
             {organizedProperty.length > 0 && organizedProperty.map((item) => (
-                    <div key={item.name} className={"flex gap-2"}>
-                        <label>{item.name}</label>
-                        <select value={properties[0][item.name]} onChange={event => updateProperties(item.name, event.target.value)}>
-                            {item.value.map(ele => (
-                                <option key={ele} value={ele}>{ele}</option>
-                            ))}
-                        </select>
-                    </div>
-                ))
+                <div key={item.name} className={"flex gap-2"}>
+                    <label>{item.name}</label>
+                    <select value={properties[item.name]}
+                            onChange={event => updateProperties(item.name, event.target.value)}>
+                        {item.value.map(ele => (
+                            <option key={ele} value={ele}>{ele}</option>
+                        ))}
+                    </select>
+                </div>
+            ))
             }
             <label>Photos</label>
             <div className="mb-2 flex flex-wrap gap-1">
@@ -110,10 +116,11 @@ export default function ProductForm({
                 </ReactSortable>
                 {isUploading && (
                     <div className="h-24 p-1 bg-gray-200 flex items-center">
-                        <Spinner />
+                        <Spinner/>
                     </div>
                 )}
-                <label className="w-24 h-24 border text-center flex items-center justify-center text-sm gap-1 rounded-md bg-gray-100 cursor-pointer">
+                <label
+                    className="w-24 h-24 border text-center flex items-center justify-center text-sm gap-1 rounded-md bg-gray-100 cursor-pointer">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5}
                          stroke="currentColor" className="w-6 h-6">
                         <path strokeLinecap="round" strokeLinejoin="round"
